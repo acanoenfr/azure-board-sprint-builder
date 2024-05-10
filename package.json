@@ -1,0 +1,20 @@
+{
+  "name": "@acanoenfr/azure-board-sprint-builder",
+  "version": "1.0.0",
+  "description": "Azure DevOps Tools - Auto generate sprints for Azure Boards (compatible with Azure API)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acanoenfr/azure-board-sprint-builder"
+  },
+  "author": "Alexandre C. <alexandre@acanoen.fr>",
+  "license": "MIT",
+  "dependencies": {
+    "azure-devops-node-api": "^13.0.0",
+    "dayjs": "^1.11.11",
+    "dotenv": "^16.4.5"
+  }
+}
