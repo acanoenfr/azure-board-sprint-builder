@@ -15,6 +15,7 @@ const connection = new azureDevOps.WebApi(orgUrl, authHandler);
 
 async function createIterations() {
     try {
+        const newIterations = [];
         const workClient = await connection.getWorkApi();
         const itemClient = await connection.getWorkItemTrackingApi();
         const iterations = await workClient.getTeamIterations({
@@ -40,7 +41,7 @@ async function createIterations() {
             const iterationName = `SP${year.toString().slice(2)}-${currentIterationNumber.toString().padStart(2, '0')} du ${startDate.format('DD-MMM')} au ${endDate.format('DD-MMM')}`;
             const iterationPath = project;
 
-            await itemClient.createOrUpdateClassificationNode({
+            const result = await itemClient.createOrUpdateClassificationNode({
                 name: iterationName,
                 path: iterationPath,
                 attributes: {
@@ -51,17 +52,21 @@ async function createIterations() {
 
             console.log("---------------");
             console.log("Iteration details saved in Azure:")
-            console.log(`Iteration name: ${iterationName}`);
-            console.log(`Iteration parent: ${iterationPath}`);
-            console.log(`Iteration start: ${startDate.toDate()}`);
-            console.log(`Iteration end: ${endDate.toDate()}`);
+            console.log(`Iteration id: ${result.id}`)
+            console.log(`Iteration identifier: ${result.identifier}`)
+            console.log(`Iteration name: ${result.name}`);
+            console.log(`Iteration parent: ${result.path}`);
+            console.log(`Iteration start: ${dayjs(result.attributes.startDate).toDate()}`);
+            console.log(`Iteration end: ${dayjs(result.attributes.finishDate).toDate()}`);
             console.log("---------------");
+
+            newIterations.push(result);
 
             startDate = endDate.add(3, 'days'); // Next sprint, next monday
             currentIterationNumber++;
         }
 
-        console.log(`Iterations are successfully created for project ${project}`);
+        console.log(`${newIterations.length} iterations are successfully created for project ${project}`);
     } catch (err) {
         console.error('An error are occured:', err);
     }

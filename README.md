@@ -32,6 +32,14 @@ Finally, launch the helping tool with following command:
 npm start
 ```
 
+After execution, you need to register sprints iterations in teams configuration page (iterations tab) on your Azure DevOps project:
+
+```text
+https://dev.azure.com/[organization]/[project]/_settings/work-team?_a=iterations
+```
+
+Click on "Select iteration(s)" to select each sprint iteration you want to use in Azure Boards.
+
 ## Credits
 
 Distributed by Alexandre C. <alexandre@acanoen.fr>
