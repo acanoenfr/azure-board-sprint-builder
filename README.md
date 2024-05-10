@@ -12,7 +12,7 @@ First, launch the following command to install dependencies.
 npm install
 ```
 
-Next, you need to change value on .env file with your values:
+Next, you need to create a .env file with your values:
 
 ```env
 ORGANIZATION_URL="https://dev.azure.com/your-organization"
@@ -21,10 +21,10 @@ PROJECT_NAME="your-project-name"
 YEAR=2024
 ```
 
-ORGANIZATION_URL is the base URL address of your Azure DevOps organization.
-PERSONAL_ACCESS_TOKEN needs to be generate in your Azure DevOps profile.
-PROJECT_NAME is the name of the project where you want to generate sprint iterations.
-YEAR is the year you wants to generate sprint iteration.
+* ORGANIZATION_URL is the base URL address of your Azure DevOps organization.
+* PERSONAL_ACCESS_TOKEN needs to be generate in your Azure DevOps profile.
+* PROJECT_NAME is the name of the project where you want to generate sprints iterations.
+* YEAR is the year you wants to generate sprints iterations.
 
 Finally, launch the helping tool with following command:
 
