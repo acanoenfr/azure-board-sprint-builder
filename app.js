@@ -2,6 +2,13 @@ require('dotenv').config();
 
 const azureDevOps = require('azure-devops-node-api');
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const tz = require('dayjs/plugin/timezone');
+require('dayjs/locale/fr');
+dayjs.extend(utc);
+dayjs.extend(tz);
+dayjs.locale('fr');
+dayjs.tz.setDefault('Europe/Paris');
 
 // Parameters such as year and project name
 const year = process.env.YEAR || 2024;
@@ -26,9 +33,9 @@ async function createIterations() {
         let startDate;
         if (iterations.length > 0) {
             const lastIteration = iterations.pop();
-            startDate = dayjs(lastIteration.attributes.finishDate).add(3, 'days');
+            startDate = dayjs.utc(lastIteration.attributes.finishDate).add(3, 'days');
         } else {
-            startDate = dayjs(`${year}-01-01`);
+            startDate = dayjs.utc(`${year}-01-01`);
             if ([0, 1, 6].indexOf(startDate.day()) === -1) {
                 startDate.startOf('year').startOf('week'); // First Monday of the year
             }
@@ -36,10 +43,17 @@ async function createIterations() {
 
         // Create sprint iterations for selected year
         let currentIterationNumber = 1;
+        console.log("---------------");
         while (startDate.year() == year) {
-            const endDate = startDate.add(9, 'days').endOf('week').subtract(1, 'day'); // Friday, after 10 days
+            const endDate = startDate.add(9, 'days').endOf('week').subtract(2, 'day'); // Friday, after 10 days
             const iterationName = `SP${year.toString().slice(2)}-${currentIterationNumber.toString().padStart(2, '0')} du ${startDate.format('DD-MMM')} au ${endDate.format('DD-MMM')}`;
             const iterationPath = project;
+
+            console.log(`Iteration name: ${iterationName}`);
+            console.log(`Iteration parent: ${iterationPath}`);
+            console.log(`Iteration start: ${startDate.format('YYYY-MM-DD')}`);
+            console.log(`Iteration end: ${endDate.format('YYYY-MM-DD')}`);
+            console.log("---------------");
 
             const result = await itemClient.createOrUpdateClassificationNode({
                 name: iterationName,
@@ -49,17 +63,6 @@ async function createIterations() {
                     finishDate: endDate.toDate()
                 }
             }, project, 'Iterations');
-
-            console.log("---------------");
-            console.log("Iteration details saved in Azure:")
-            console.log(`Iteration id: ${result.id}`)
-            console.log(`Iteration identifier: ${result.identifier}`)
-            console.log(`Iteration name: ${result.name}`);
-            console.log(`Iteration parent: ${result.path}`);
-            console.log(`Iteration start: ${dayjs(result.attributes.startDate).toDate()}`);
-            console.log(`Iteration end: ${dayjs(result.attributes.finishDate).toDate()}`);
-            console.log("---------------");
-
             newIterations.push(result);
 
             startDate = endDate.add(3, 'days'); // Next sprint, next monday
